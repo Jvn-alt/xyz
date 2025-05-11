@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DAA LAB </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 400px;
+      font-family: monospace;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      margin-bottom: 40px;
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    function copyCode(id) {
+      const textarea = document.getElementById(id);
+      textarea.select();
+      document.execCommand("copy");
+      alert("Code copied!");
+    }
+  </script>
+</head>
+<body>
+
+<h1>Program to solve the string matching problem using KMP algorithmLab 9 ( DAA )</h1>
+
+<textarea id="pycode">
+
+def computeLPSArray(pat, M, lps):
+    length = 0  # length of the previous longest prefix suffix
+    lps[0] = 0  # lps[0] is always 0
+    i = 1
+
+    while i < M:
+        if pat[i] == pat[length]:
+            length += 1
+            lps[i] = length
+            i += 1
+        else:
+            if length != 0:
+                length = lps[length - 1]
+            else:
+                lps[i] = 0
+                i += 1
+
+def KMPSearch(pat, txt):
+    M = len(pat)
+    N = len(txt)
+    lps = [0] * M
+    computeLPSArray(pat, M, lps)
+
+    i = j = 0  # index for txt[], index for pat[]
+    while i < N:
+        if pat[j] == txt[i]:
+            i += 1
+            j += 1
+
+        if j == M:
+            print(f"Found pattern at index {i - j}")
+            j = lps[j - 1]
+        elif i < N and pat[j] != txt[i]:
+            if j != 0:
+                j = lps[j - 1]
+            else:
+                i += 1
+
+
+txt = input("Enter the text: ")
+pat = input("Enter the pattern: ")
+KMPSearch(pat, txt)
+
+</textarea>
+
+<button onclick="copyCode('pycode')">Copy</button>
+<h1>String matching problem using booyer-moore</h1>
+
+<textarea id="pycode">
+
+MAX_CHARS = 256
+
+def max(a, b):
+    return a if a > b else b
+
+def badCharHeuristic(pat, size, badchar):
+    for i in range(MAX_CHARS):
+        badchar[i] = -1
+    for i in range(size):
+        badchar[ord(pat[i])] = i
+
+def patternsearch(text, pat):
+    m = len(pat)
+    n = len(text)
+    badchar = [-1] * MAX_CHARS
+
+    badCharHeuristic(pat, m, badchar)
+
+    s = 0  # s is shift of the pattern with respect to text
+    while s <= (n - m):
+        j = m - 1
+
+        while j >= 0 and pat[j] == text[s + j]:
+            j = j - 1
+
+        if j < 0:
+            print("\nPattern occurs at position = ", s)
+            s += m - badchar[ord(text[s + m])] if (s + m) < n else 1
+        else:
+            s += max(1, j - badchar[ord(text[s + j])])
+
+
+text = input("Enter the text: ").rstrip('\n')
+pat = input("Enter the pattern: ").rstrip('\n')
+
+patternsearch(text, pat)
+
+</textarea>
+<button onclick="copyCode('pycode')">Copy</button>
+</body>
+</html>
